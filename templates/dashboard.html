@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Wifi Monitoring</title>
+        <link href="static/css/styles.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script> 
+
+    </head>
+    <body class="sb-nav-fixed">
+        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+            <a class="navbar-brand" href="/dashboard">Wifi Monitoring</a><button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="/dashboard"><i class="fas fa-bars"></i></button>
+        </nav>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_nav">
+                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                    <div class="sb-sidenav-menu">
+                        <div class="nav">
+                            <div class="sb-sidenav-menu-heading">Menu</div>
+                            <a class="nav-link" href="/dashboard">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>Dashboard</a>
+                            <div class="sb-sidenav-menu-heading">Locations</div>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>Floor 1</a>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>Floor 2</a>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>Floor 3</a>
+                            <a class="nav-link" href="#">
+                                <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>Floor 4</a>
+                        </div>
+                    </div>
+                    <div class="sb-sidenav-footer">
+                        <div class="small">Logged in as:</div>Wifi Monitoring</div>
+                </nav>
+            </div>
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid">
+                        <h1 class="mt-4">Dashboard</h1>                        
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">WLC 1</div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>AP Join : {{wlc1_ap_join}}</td>
+                                                        <td>Online User : {{wlc1_online_user}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Download : {{wlc1_download}}</td>
+                                                        <td>Upload : {{wlc1_upload}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header"><i class="fas fa-chart-area mr-1"></i>Download</div>                                                                 
+                                        <canvas id="chartdownload1" width="600" height="400"></canvas>
+                                        <script>
+                        
+                                            // bar chart data
+                                            var barData = {
+                                                labels : [
+                                                {% for item in labels %}
+                                                    "{{ item }}",
+                                                {% endfor %}
+                                                ],
+                                                datasets : [{
+                                                fillColor: "rgba(151,187,205,0.2)",
+                                                strokeColor: "rgba(151,187,205,1)",
+                                                pointColor: "rgba(151,187,205,1)",
+                                                pointStrokeColor: "#fff",
+                                                pointHighlightFill: "#fff",
+                                                pointHighlightStroke: "rgba(151,187,205,1)",
+                                                bezierCurve : false,
+                                                data : [
+                                                {% for item in download1 %}
+                                                    {{ item }},
+                                                    {% endfor %}]
+                                                }
+                                            ]
+                                            }
+                                            Chart.defaults.global.animationSteps = 50;
+                                            Chart.defaults.global.tooltipYPadding = 16;
+                                            Chart.defaults.global.tooltipCornerRadius = 0;
+                                            Chart.defaults.global.tooltipTitleFontStyle = "normal";
+                                            Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+                                            Chart.defaults.global.animationEasing = "easeOutBounce";
+                                            Chart.defaults.global.responsive = false;
+                                            Chart.defaults.global.scaleLineColor = "black";
+                                            Chart.defaults.global.scaleFontSize = 16;
+                                            // get bar chart canvas
+                                            var mychart = document.getElementById("chartdownload1").getContext("2d");
+                                            steps = 10
+                                            max = {{ max }}
+                                            // draw bar chart
+                                            var LineChartDemo = new Chart(mychart).Line(barData, {
+                                                scaleOverride: true,
+                                                scaleSteps: steps,
+                                                scaleStepWidth: Math.ceil(max / steps),
+                                                scaleStartValue: 0,
+                                                scaleShowVerticalLines: true,
+                                                scaleShowGridLines : true,
+                                                barShowStroke : true,
+                                                scaleShowLabels: true,
+                                                bezierCurve: false,
+                                            });
+                                        </script>                                    
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header"><i class="fas fa-chart-bar mr-1"></i>Upload</div>                                    
+                                        <canvas id="chartupload1" width="600" height="400"></canvas>
+                                        <script>
+                        
+                                            // bar chart data
+                                            var barData = {
+                                                labels : [
+                                                {% for item in labels %}
+                                                    "{{ item }}",
+                                                {% endfor %}
+                                                ],
+                                                datasets : [{
+                                                fillColor: "rgba(151,187,205,0.2)",
+                                                strokeColor: "rgba(151,187,205,1)",
+                                                pointColor: "rgba(151,187,205,1)",
+                                                pointStrokeColor: "#fff",
+                                                pointHighlightFill: "#fff",
+                                                pointHighlightStroke: "rgba(151,187,205,1)",
+                                                bezierCurve : false,
+                                                data : [
+                                                {% for item in upload1 %}
+                                                    {{ item }},
+                                                    {% endfor %}]
+                                                }
+                                            ]
+                                            }
+                                            Chart.defaults.global.animationSteps = 50;
+                                            Chart.defaults.global.tooltipYPadding = 16;
+                                            Chart.defaults.global.tooltipCornerRadius = 0;
+                                            Chart.defaults.global.tooltipTitleFontStyle = "normal";
+                                            Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+                                            Chart.defaults.global.animationEasing = "easeOutBounce";
+                                            Chart.defaults.global.responsive = false;
+                                            Chart.defaults.global.scaleLineColor = "black";
+                                            Chart.defaults.global.scaleFontSize = 16;
+                                            // get bar chart canvas
+                                            var mychart = document.getElementById("chartupload1").getContext("2d");
+                                            steps = 10
+                                            max = {{ max }}
+                                            // draw bar chart
+                                            var LineChartDemo = new Chart(mychart).Line(barData, {
+                                                scaleOverride: true,
+                                                scaleSteps: steps,
+                                                scaleStepWidth: Math.ceil(max / steps),
+                                                scaleStartValue: 0,
+                                                scaleShowVerticalLines: true,
+                                                scaleShowGridLines : true,
+                                                barShowStroke : true,
+                                                scaleShowLabels: true,
+                                                bezierCurve: false,
+                                            });
+                                            </script>                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header">WLC 2</div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>AP Join : {{wlc2_ap_join}}</td>
+                                                        <td>Online User : {{wlc2_online_user}}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Download : {{wlc2_download}}</td>
+                                                        <td>Upload : {{wlc2_upload}}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header"><i class="fas fa-chart-area mr-1"></i>Download</div>                                                                 
+                                        <canvas id="chartdownload2" width="600" height="400"></canvas>
+                                        <script>
+
+                                            // bar chart data
+                                            var barData = {
+                                                labels : [
+                                                {% for item in labels %}
+                                                    "{{ item }}",
+                                                {% endfor %}
+                                                ],
+                                                datasets : [{
+                                                fillColor: "rgba(151,187,205,0.2)",
+                                                strokeColor: "rgba(151,187,205,1)",
+                                                pointColor: "rgba(151,187,205,1)",
+                                                pointStrokeColor: "#fff",
+                                                pointHighlightFill: "#fff",
+                                                pointHighlightStroke: "rgba(151,187,205,1)",
+                                                bezierCurve : false,
+                                                data : [
+                                                {% for item in download2 %}
+                                                    {{ item }},
+                                                    {% endfor %}]
+                                                }
+                                            ]
+                                            }
+                                            Chart.defaults.global.animationSteps = 50;
+                                            Chart.defaults.global.tooltipYPadding = 16;
+                                            Chart.defaults.global.tooltipCornerRadius = 0;
+                                            Chart.defaults.global.tooltipTitleFontStyle = "normal";
+                                            Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+                                            Chart.defaults.global.animationEasing = "easeOutBounce";
+                                            Chart.defaults.global.responsive = false;
+                                            Chart.defaults.global.scaleLineColor = "black";
+                                            Chart.defaults.global.scaleFontSize = 16;
+                                            // get bar chart canvas
+                                            var mychart = document.getElementById("chartdownload2").getContext("2d");
+                                            steps = 10
+                                            max = {{ max1 }}
+                                            // draw bar chart
+                                            var LineChartDemo = new Chart(mychart).Line(barData, {
+                                                scaleOverride: true,
+                                                scaleSteps: steps,
+                                                scaleStepWidth: Math.ceil(max / steps),
+                                                scaleStartValue: 0,
+                                                scaleShowVerticalLines: true,
+                                                scaleShowGridLines : true,
+                                                barShowStroke : true,
+                                                scaleShowLabels: true,
+                                                bezierCurve: false,
+                                            });
+                                            </script>
+                                            <p>หน่วยเป็น GB</p>                    
+                                </div>
+                            </div>
+                            <div class="col-xl-6">
+                                <div class="card mb-4">
+                                    <div class="card-header"><i class="fas fa-chart-bar mr-1"></i>Upload</div>                                    
+                                        <canvas id="chartupload2" width="600" height="400"></canvas>
+                                        <script>
+                                            // bar chart data
+                                            var barData = {
+                                                labels : [
+                                                    {% for item in labels %}
+                                                    "{{ item }}",
+                                                    {% endfor %}
+                                                ],
+                                                datasets : [{
+                                                    fillColor: "rgba(151,187,205,0.2)",
+                                                    strokeColor: "rgba(151,187,205,1)",
+                                                    pointColor: "rgba(151,187,205,1)",
+                                                    pointStrokeColor: "#fff",
+                                                    pointHighlightFill: "#fff",
+                                                    pointHighlightStroke: "rgba(151,187,205,1)",
+                                                    bezierCurve : false,
+                                                    data : [
+                                                        {% for item in upload2 %}
+                                                        {{ item }},
+                                                        {% endfor %}]
+                                                    }
+                                                ]
+                                            }
+                                            Chart.defaults.global.animationSteps = 50;
+                                            Chart.defaults.global.tooltipYPadding = 16;
+                                            Chart.defaults.global.tooltipCornerRadius = 0;
+                                            Chart.defaults.global.tooltipTitleFontStyle = "normal";
+                                            Chart.defaults.global.tooltipFillColor = "rgba(0,0,0,0.8)";
+                                            Chart.defaults.global.animationEasing = "easeOutBounce";
+                                            Chart.defaults.global.responsive = false;
+                                            Chart.defaults.global.scaleLineColor = "black";
+                                            Chart.defaults.global.scaleFontSize = 16;
+                                            // get bar chart canvas
+                                            var mychart = document.getElementById("chartupload2").getContext("2d");
+                                            steps = 10
+                                            max = {{ max1 }}
+                                            // draw bar chart
+                                            var LineChartDemo = new Chart(mychart).Line(barData, {
+                                                scaleOverride: true,
+                                                scaleSteps: steps,
+                                                scaleStepWidth: Math.ceil(max / steps),
+                                                scaleStartValue: 0,
+                                                scaleShowVerticalLines: true,
+                                                scaleShowGridLines : true,
+                                                barShowStroke : true,
+                                                scaleShowLabels: true,
+                                                bezierCurve: false,
+                                            });
+                                            </script>                         
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2019</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="static/js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="static/assets/demo/chart-area-demo.js"></script>
+        <script src="static/assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="static/assets/demo/datatables-demo.js"></script>
+    </body>
+</html>
